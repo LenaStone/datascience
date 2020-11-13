@@ -1,0 +1,53 @@
+---
+title: 'Homework #2: Creating an R Markdown File'
+author: "By Lena Stone"
+date: "9/25/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+To begin this assignment, I'll use the same code as before to input my dataset. I stored the file as an Excel sheet on my computer, as you'll see in the working directory pathway in the code below.
+
+```{r}
+library(tidyverse)
+library(readxl)
+covid_responses <- read_excel("Desktop/covid-responses.xlsx")
+```
+
+To begin investigating the data, I'll use some simple commands to start looking at the dimensions. From our Data Wrangling section, we learned tools like the following:  
+
+  * head(), which allows us to preview the first five rows
+  * dim(), which shows us the dimensions  
+  * colnames(), which returns the name of every column
+  
+Let's try a few out. 
+
+```{r}
+head(covid_responses)
+dim(covid_responses)
+colnames(covid_responses)
+```
+
+We've learned a lot of information from these simple commands, including the names of the variables and data structure. **The dimensions of the dataset are 3460 x 80.**  
+
+If we wanted to preview the first few rows of a specific variable, we could run the following:  
+
+```{r}
+head(select(covid_responses, "handshake"))
+```
+
+This would show us the header of only one variable. In this case, the chosen variable is whether or not people think it's okay to shake hands right now, with answers of "YES" meaning they think it's *inappropriate* and answers of "NO" meaning they think it's still _appropriate_.  
+
+However, just seeing the data like this isn't so helpful, since we're only viewing a very select portion of the responses. Let's use another command to elucidate:
+
+```{r}
+handshakes <- (select(covid_responses, "handshake"))
+table(handshakes)
+```
+
+Now we can see the breakdown:  
+  * 60 people said it is still appropriate to shake hands.  
+  * 3290 people said it is not appropriate to shake hands.  
+  
+

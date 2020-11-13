@@ -1,0 +1,75 @@
+---
+title: 'Homework #3: Data Visualization'
+author: "Lena Stone"
+date: "10/18/2020"
+output:
+  pdf_document: default
+  word_document: default
+  html_document:
+    df_print: paged
+---
+To begin, let's load the dataset into our R Markdown file using the same script we've been using.  
+
+```{r, include=FALSE}
+library(tidyverse)
+```
+
+```{r}
+library(readxl)
+covid_responses <- read_excel("/Users/lenastone/Desktop/covid-responses.xlsx")
+```
+
+Once that's completed, I'm going to briefly refresh myself of the variables in this dataset. I also have the survey codebook up on my other screen to view the questions in their public-facing form. The PDF I'm using can be found here: <https://drive.google.com/file/d/196qAqttPmkwYzoUfQLwFNU4CTn3UGGRF/view>  
+
+Right away, I'm interested in a set of questions regarding public opinion on financial punishment for violation of coronavirus precautions. The question asks the following:  
+
+_Should risky behaviors, which might enable further spread of the coronavirus, be financially punished?_  
+
+Let's see how many people initially answered affirmatively to this question.
+```{r}
+financial_punishment <- (select(covid_responses, "financialpunishment"))
+table(financial_punishment)
+```
+
+So we can see that the overwhelming majority of people thought that financial punishment was appropriate for violation of social distancing regulations. If people answered affirmatively, they would then be given two follow-up questions:  
+
+  Which fines should be enforced for the following risky 
+  behaviours (amount in Euros)?
+  
+    1. Participation at social gatherings
+    2. Going out despite exhibiting symptoms
+    
+Let's take a look at the first question. We know that the variable is numeric based off the question format, but we can also take a quick look below:  
+
+```{r}
+class(covid_responses$Geldstrafe_1_1)
+```
+
+Now, to quickly summarize, the below graph includes individuals who said "YES" to instituting fines for COVID violations and shows the amount (in Euros) that they think is appropriate on the x-axis, and the number of people who gave that response on the y-axis.
+
+```{r warning=TRUE}
+ggplot(data = covid_responses) + geom_histogram(mapping=aes(x=Geldstrafe_1_1))
+```
+
+This is a bare-basics graph with only one additional layer added: a histogram to show the numerical Euros values. However, it doesn't look very pretty, and I don't think the binwidth is doing us any favors. Let's get a little more creative:
+
+```{r}
+ggplot(data = covid_responses) + geom_histogram(mapping=aes(x=Geldstrafe_1_1), fill="blue", colour="black", binwidth = 45, alpha = 0.5) + labs(title = "Theoretical fines for participation at social gatherings", subtitle = "Italian citizens who support monetary punitive action against COVID-19 violators", y = "Number of responses", x = "Amount in Euros", caption = "Source: Covid-19 International Behavioral Science Group") + theme_classic()
+```
+
+Let's also see a graph of the second question addressed above.
+
+```{r}
+ggplot(data = covid_responses) + geom_histogram(mapping=aes(x=Geldstrafe_2_1), fill="blue", colour="black", binwidth = 45, alpha = 0.5) + labs(title = "Theoretical fines for going out despite exhibiting symptoms", subtitle = "Italian citizens who support monetary punitive action against COVID-19 violators", y = "Number of responses", x = "Amount in Euros", caption = "Source: Covid-19 International Behavioral Science Group") + theme_classic()
+```
+Now we have two better-looking graphs for these two distributions. I also experimented with different ways of displaying the histogram, namely adding a smoothing curve like below:  
+
+```{r}
+ggplot(covid_responses, aes(x=Geldstrafe_1_1)) + geom_histogram(aes(y=..density..), colour="black", fill="white", binwidth = 45)+geom_density(alpha=.2, fill="blue") 
+```
+
+However, I didn't feel this added anything particularly special to the presentation, so I'd likely present the original two created above. The density line also doesn't reach the top of the graph, although I'm not quite sure why. Is there another way to add a smoothing line to a graph like this for more optimal results? (Not that I think it adds much here, but just for future reference.) 
+
+I also thought about other types of graphs, namely a scatterplot or something of the like, but for a continuous variable of this kind a histogram seemed like the best choice.  
+
+Overall, I ran into a LOT of errors making the above graphs before they finally came out right. I found it took a while to get used to layering the code correctly, even though I conceptually understood the idea. I found myself wanting to have a better understanding of the components of each variable and how things were stored in the dataset so that I could better graph the final product. In the future, I think tinkering around with the software and doing more to explore the dataset will help me conceptualize my thoughts better. 
